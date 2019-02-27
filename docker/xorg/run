@@ -1,0 +1,21 @@
+#!/bin/bash
+set -ex
+export XINITRC=/etc/X11/xinitrc
+
+COMMAND="${@}"
+
+if [[ -z "${COMMAND}" ]]; then
+  COMMAND="sleep infinity"
+fi
+
+cat >${XINITRC} <<EOF
+setxkbmap -option terminate:ctrl_alt_bksp
+/usr/bin/dwm &
+${COMMAND}
+EOF
+
+chmod +x ${XINITRC}
+
+
+
+exec /usr/bin/env XINITRC=${XINITRC} /usr/bin/xinit /etc/X11/xinitrc -- /usr/bin/Xorg -verbose 3 -novtswitch -keeptty -verbose -allowMouseOpenFail
